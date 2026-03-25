@@ -1,5 +1,5 @@
 # 檔案名稱要叫app.py
-# 先下載套件 pip install numpy-financial
+# 先下載套件 pip install numpy-financial /pip install multitasking /pip install streamlit pandas numpy yfinance
 # terminal下 streamlit run app.py 
 # pip install yfinance
 
