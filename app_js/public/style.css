@@ -18,7 +18,8 @@ body {
   font-family: "Inter", "Segoe UI", sans-serif;
   background: var(--bg);
   display: flex;
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
   color: #1e293b;
 }
 
@@ -153,6 +154,7 @@ body {
   flex-direction: column;
   gap: 22px;
   min-width: 0;
+  overflow: hidden;
 }
 
 .main-title {
@@ -227,6 +229,7 @@ body {
   gap: 18px;
   flex: 1;
   min-height: 0;
+  overflow: hidden;
 }
 
 .panel {
@@ -236,7 +239,7 @@ body {
   box-shadow: var(--card-shad);
   display: flex;
   flex-direction: column;
-  min-height: 360px;
+  min-height: 0;
 }
 
 .panel-title {
@@ -253,7 +256,9 @@ body {
 #chart-container {
   flex: 1;
   position: relative;
+  min-height: 0;
 }
+
 
 /* ========== TABLE ========== */
 #table-wrap {
