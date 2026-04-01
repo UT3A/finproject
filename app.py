@@ -2,6 +2,7 @@
 # 先下載套件 pip install numpy-financial /pip install multitasking /pip install streamlit pandas numpy yfinance
 # terminal下 streamlit run app.py 
 # pip install yfinance
+# myenv\Scripts\streamlit run app.py
 
 import streamlit as st
 import pandas as pd
@@ -50,6 +51,14 @@ with st.spinner('正在從 Yahoo Finance 抓取歷史股價...'):
         price_col = 'Adj Close' if 'Adj Close' in df_stock.columns else 'Close'
         daily_prices = df_stock[price_col]
         
+        # ==========================================
+        # ★ 新增：計算資產的最大回撤 (MDD)
+        # 每天的價格除以歷史最高價 - 1，找出跌幅最深的值
+        # ==========================================
+        roll_max = daily_prices.cummax()
+        drawdown = daily_prices / roll_max - 1.0
+        max_drawdown = float(drawdown.min()) # 轉為 float 確保格式正確
+        
         resample_rule = 'ME' if freq_option == "每月" else 'YE'
         period_prices = daily_prices.resample(resample_rule).ffill()
         annual_returns_series = period_prices.pct_change().dropna()
@@ -64,7 +73,7 @@ with st.spinner('正在從 Yahoo Finance 抓取歷史股價...'):
 # ==========================================
 # 財富計算邏輯 (套用真實報酬率)
 # ==========================================
-# ★ 將初始本金加入起始計算
+# 將初始本金加入起始計算
 current_wealth = initial_investment
 cumulative_investment = initial_investment
 matrix_data = []
@@ -90,7 +99,7 @@ total_cost = initial_investment + (periodic_investment * total_periods)
 periods_per_year = 12 if freq_option == "每月" else 1
 years_passed = total_periods / periods_per_year
 
-# ★ 防呆機制：如果總投入成本為 0，避免除以 0 的錯誤
+# 防呆機制：如果總投入成本為 0，避免除以 0 的錯誤
 if total_cost > 0:
     total_return_ratio = final_wealth / total_cost
     geometric_annual_return = (total_return_ratio) ** (1 / years_passed) - 1
@@ -102,11 +111,13 @@ asset_cagr = np.prod([1 + r for r in returns]) ** (1 / years_passed) - 1
 # ==========================================
 # 視覺化
 # ==========================================
-col1, col2, col3, col4 = st.columns(4)
-col1.metric(label=f"總投入成本 ({total_periods} 期)", value=f"${total_cost:,.0f}")
+# ★ 將 4 個 metrics 擴充為 5 個，加入 MDD
+col1, col2, col3, col4, col5 = st.columns(5)
+col1.metric(label=f"總投入 ({total_periods} 期)", value=f"${total_cost:,.0f}")
 col2.metric(label="最終財富", value=f"${final_wealth:,.2f}")
 col3.metric(label=f"{ticker} 資產年化報酬", value=f"{asset_cagr:.2%}")
-col4.metric(label="投資人年化報酬 (幾何平均)", value=f"{geometric_annual_return:.2%}")
+col4.metric(label="投資人年化報酬", value=f"{geometric_annual_return:.2%}")
+col5.metric(label="最大回撤 (MDD)", value=f"{max_drawdown:.2%}")
 
 col_left, col_right = st.columns([1.5, 1])
 

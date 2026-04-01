@@ -1,0 +1,13 @@
+{
+  "name": "finproject-js",
+  "version": "1.0.0",
+  "description": "真實股市：投資分析計算機 (JavaScript 版)",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}

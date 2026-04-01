@@ -1,0 +1,129 @@
+<!--cd c:/Users/UTA/Documents/GitHub/finproject/app_js-->
+<!--node server.js-->
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>真實股市：投資分析計算機</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<!-- 側邊欄 -->
+<aside id="sidebar">
+  <div class="sidebar-header">
+    <div class="app-title">投資分析計算機</div>
+    <div class="app-sub">真實股市定期定額模擬</div>
+  </div>
+
+  <div class="sidebar-body">
+    <div class="section-label">股票設定</div>
+
+    <div class="field">
+      <label>股票代號</label>
+      <input type="text" id="ticker" value="SPY" placeholder="SPY / 2330.TW" />
+    </div>
+
+    <div class="field">
+      <label>起始日期</label>
+      <input type="date" id="start-date" />
+    </div>
+
+    <div class="field">
+      <label>結束日期</label>
+      <input type="date" id="end-date" />
+    </div>
+
+    <div class="section-label">資金設定</div>
+
+    <div class="field">
+      <label>初始單筆投入 ($)</label>
+      <input type="number" id="initial-investment" value="0" min="0" step="1000" />
+    </div>
+
+    <div class="field">
+      <label>後續投入頻率</label>
+      <select id="freq">
+        <option value="monthly">每月</option>
+        <option value="yearly" selected>每年</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>每次投入金額 ($)</label>
+      <input type="number" id="periodic-investment" value="10000" min="0" step="1000" />
+    </div>
+  </div>
+
+  <div class="sidebar-footer">
+    <button id="run-btn" onclick="runAnalysis()">開始計算</button>
+    <p class="data-source">資料來源：Yahoo Finance</p>
+  </div>
+</aside>
+
+<!-- 主內容 -->
+<main id="main">
+  <div class="main-title">真實股市<span>：</span>投資報酬分析</div>
+
+  <div id="status-wrap">
+    <p id="status">請在左側設定參數後按「開始計算」</p>
+  </div>
+
+  <!-- Metrics -->
+  <div id="metrics" style="display:none">
+    <div class="metric-card">
+      <div class="m-label" id="lbl-cost">總投入</div>
+      <div class="m-value" id="val-cost">-</div>
+    </div>
+    <div class="metric-card">
+      <div class="m-label">最終財富</div>
+      <div class="m-value" id="val-final">-</div>
+    </div>
+    <div class="metric-card">
+      <div class="m-label" id="lbl-asset-cagr">資產年化報酬</div>
+      <div class="m-value" id="val-asset-cagr">-</div>
+    </div>
+    <div class="metric-card">
+      <div class="m-label">投資人年化報酬</div>
+      <div class="m-value" id="val-investor-cagr">-</div>
+    </div>
+    <div class="metric-card">
+      <div class="m-label">最大回撤 (MDD)</div>
+      <div class="m-value" id="val-mdd">-</div>
+    </div>
+  </div>
+
+  <!-- 圖表 + 表格 -->
+  <div id="content-row" style="display:none">
+    <div class="panel">
+      <div class="panel-title">累積財富走勢</div>
+      <div id="chart-container">
+        <canvas id="wealth-chart"></canvas>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">各期明細</div>
+      <div id="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>日期</th>
+              <th>累積本金</th>
+              <th>當期報酬率</th>
+              <th>期末財富</th>
+            </tr>
+          </thead>
+          <tbody id="table-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script src="app.js"></script>
+</body>
+</html>
