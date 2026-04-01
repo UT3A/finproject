@@ -97,32 +97,54 @@
     </div>
   </div>
 
-  <!-- 圖表 + 表格 -->
+  <!-- 圖表 -->
   <div id="content-row" style="display:none">
     <div class="panel">
-      <div class="panel-title">累積財富走勢</div>
+      <div class="panel-title">
+        累積財富走勢
+        <button id="detail-btn" onclick="toggleDetailModal()">各期明細</button>
+      </div>
       <div id="chart-container">
         <canvas id="wealth-chart"></canvas>
       </div>
-    </div>
-    <div class="panel">
-      <div class="panel-title">各期明細</div>
-      <div id="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>日期</th>
-              <th>累積本金</th>
-              <th>當期報酬率</th>
-              <th>期末財富</th>
-            </tr>
-          </thead>
-          <tbody id="table-body"></tbody>
-        </table>
+      <div id="chart-range">
+        <div class="range-labels">
+          <span id="range-label-start"></span>
+          <span id="range-label-end"></span>
+        </div>
+        <div class="range-track">
+          <div id="range-track-bg"></div>
+          <div id="range-track-fill"></div>
+          <input type="range" id="range-start" min="0" value="0" step="1" />
+          <input type="range" id="range-end"   min="0" value="100" step="1" />
+        </div>
       </div>
     </div>
   </div>
 </main>
+
+<!-- 各期明細 Modal -->
+<div id="detail-modal" class="modal-overlay" onclick="closeDetailModal(event)">
+  <div class="modal-box">
+    <div class="modal-header">
+      <span>各期明細</span>
+      <button class="modal-close" onclick="toggleDetailModal()">✕</button>
+    </div>
+    <div id="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>日期</th>
+            <th>累積本金</th>
+            <th>當期報酬率</th>
+            <th>期末財富</th>
+          </tr>
+        </thead>
+        <tbody id="table-body"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
 
 <script src="app.js"></script>
 </body>

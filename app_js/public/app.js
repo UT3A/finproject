@@ -7,7 +7,67 @@
   document.getElementById('end-date').value = fmt(today);
 })();
 
+function toggleDetailModal() {
+  document.getElementById('detail-modal').classList.toggle('open');
+}
+function closeDetailModal(e) {
+  if (e.target === document.getElementById('detail-modal')) toggleDetailModal();
+}
+
 let chartInstance = null;
+let allDateLabels = [];
+
+function initRangeSliders(labels) {
+  allDateLabels = labels;
+  const max = labels.length - 1;
+
+  const sliderStart = document.getElementById('range-start');
+  const sliderEnd   = document.getElementById('range-end');
+
+  sliderStart.max = max;
+  sliderStart.value = 0;
+  sliderEnd.max = max;
+  sliderEnd.value = max;
+
+  updateRangeUI();
+
+  sliderStart.oninput = () => {
+    if (+sliderStart.value >= +sliderEnd.value) sliderStart.value = +sliderEnd.value - 1;
+    updateRangeUI();
+    applyZoom();
+  };
+  sliderEnd.oninput = () => {
+    if (+sliderEnd.value <= +sliderStart.value) sliderEnd.value = +sliderStart.value + 1;
+    updateRangeUI();
+    applyZoom();
+  };
+}
+
+function updateRangeUI() {
+  const sliderStart = document.getElementById('range-start');
+  const sliderEnd   = document.getElementById('range-end');
+  const fill        = document.getElementById('range-track-fill');
+  const max = +sliderStart.max;
+  const s   = +sliderStart.value;
+  const e   = +sliderEnd.value;
+
+  const pctS = (s / max) * 100;
+  const pctE = (e / max) * 100;
+  fill.style.left  = `${pctS}%`;
+  fill.style.width = `${pctE - pctS}%`;
+
+  document.getElementById('range-label-start').textContent = allDateLabels[s] ?? '';
+  document.getElementById('range-label-end').textContent   = allDateLabels[e] ?? '';
+}
+
+function applyZoom() {
+  if (!chartInstance) return;
+  const s = +document.getElementById('range-start').value;
+  const e = +document.getElementById('range-end').value;
+  chartInstance.options.scales.x.min = allDateLabels[s];
+  chartInstance.options.scales.x.max = allDateLabels[e];
+  chartInstance.update('none');
+}
 
 function resample(prices, freq) {
   const map = new Map();
@@ -184,6 +244,8 @@ async function runAnalysis() {
         },
       },
     });
+
+    initRangeSliders(dateLabels);
 
     statusWrap.style.display = 'none';
     document.getElementById('metrics').style.display = 'grid';
